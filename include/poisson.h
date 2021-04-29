@@ -84,7 +84,15 @@ protected:
   void
   solve();
   void
+  estimate();
+  void
+  compute_error();
+  void
+  mark();
+  void
   output_results(const unsigned cycle) const;
+  void
+  residual_error_estimator();
 
   Triangulation<dim>         triangulation;
   std::unique_ptr<FE_Q<dim>> fe;
@@ -95,6 +103,7 @@ protected:
   Vector<double>             solution;
   Vector<double>             system_rhs;
 
+  Vector<float>       error_per_cell;
   FunctionParser<dim> forcing_term;
   FunctionParser<dim> coefficient;
   FunctionParser<dim> exact_solution;
@@ -106,10 +115,15 @@ protected:
   unsigned int fe_degree           = 1;
   unsigned int n_refinements       = 4;
   unsigned int n_refinement_cycles = 1;
+  unsigned int mapping_degree      = 2;
   std::string  output_filename     = "poisson";
 
   std::set<types::boundary_id> dirichlet_ids = {0};
   std::set<types::boundary_id> neumann_ids;
+
+  std::string               estimator_type                    = "exact";
+  std::string               marking_strategy                  = "global";
+  std::pair<double, double> coarsening_and_refinement_factors = {0.03, 0.3};
 
   std::string                   forcing_term_expression                  = "1";
   std::string                   coefficient_expression                   = "1";
@@ -123,6 +137,8 @@ protected:
   std::string grid_generator_arguments = "0: 1: false";
 
   ParsedConvergenceTable error_table;
+
+  bool use_direct_solver = true;
 
   template <typename Integral>
   friend class PoissonTester;
