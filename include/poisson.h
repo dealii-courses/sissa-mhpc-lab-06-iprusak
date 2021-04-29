@@ -138,7 +138,7 @@ protected:
 
   ParsedConvergenceTable error_table;
 
-  bool use_direct_solver = true;
+  bool use_direct_solver = false;
 
   template <typename Integral>
   friend class PoissonTester;
